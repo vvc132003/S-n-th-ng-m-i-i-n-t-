@@ -1,0 +1,118 @@
+
+.customer-header {
+    background-color: #FFA500; /* Orange color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+.header-container {
+    max-width: 1200px; /* Adjust this value as needed */
+    margin: 0 auto; /* Center the container horizontally */
+    padding-left: 20px; /* Add padding to the left */
+    padding-right: 20px; /* Add padding to the right */
+}
+
+.small-text {
+    font-size: 12px !important; // Use !important to override any other styles
+}
+.separator {
+    width: 1.5px;
+    height: 20px; /* Adjust height as needed */
+    background-color: #ccc; /* Adjust color as needed */
+    margin: 0 5px; /* Adjust spacing as needed */
+}
+
+
+.header-icons {
+    font-size: 12px; /* Uniform text size */
+}
+
+.icon-links {
+    display: flex;
+    align-items: center;
+    color: #343a40; /* Darker text color */
+    margin-right: 15px; /* Space between links */
+}
+
+.icon-links:hover {
+    color: #007bff; /* Highlight color on hover */
+}
+
+.social-icons {
+    display: flex;
+    align-items: center;
+}
+
+.social-icons a {
+    color: #343a40;
+    margin-right: 10px; /* Space between social icons */
+}
+
+.social-icons a:hover {
+    color: #007bff; /* Highlight color on hover */
+}
+
+.user-info {
+    font-size: 12px;
+    color: #343a40; /* Darker text color */
+}
+
+.user-name {
+    font-weight: bold;
+    color: #007bff; /* Highlight color for the user name */
+}
+
+.logo img {
+    max-height: 80px; /* Limit the logo height */
+}
+
+.search-bar {
+    border: 1px solid #ced4da; /* Border for the search bar */
+    border-radius: 4px; /* Rounded corners */
+}
+
+.search-bar input {
+    border: none;
+    border-radius: 4px 0 0 4px; /* Rounded corners for the input */
+}
+
+.search-bar button {
+    border-radius: 0 4px 4px 0; /* Rounded corners for the button */
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+}
+
+.nav-link {
+    color: #343a40; /* Darker text color */
+    margin-left: 15px; /* Space between icons */
+}
+
+.nav-link:hover {
+    color: #007bff; /* Highlight color on hover */
+}
+
+
+/* Assuming you're using a CSS file or inline styles */
+.price-box {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #f8f9fa;
+    font-size: 26px;
+    color: red;
+    width: 100%;
+}
+
+
+.sl .input-group {
+    max-width: 150px;
+}
+
+.sl .input-group .form-control {
+    text-align: center;
+}
+
+/* Add this to your CSS file */
+.active a {
+    font-weight: bold;
+}
