@@ -24,6 +24,8 @@ import Salesman from './components/SalesmanComponents/Salesman';
 import Shopsettings from './components/SalesmanComponents/Shopsettings';
 import ListProductByIdShop from './components/SalesmanComponents/ListProductByIdShop';
 import AddProducts from './components/SalesmanComponents/AddProduct';
+import ListOrder from './components/OrderComponents/ListOrder';
+import Purchase from './components/OrderComponents/Purchase';
 
 
 const App = () => {
@@ -69,6 +71,13 @@ const App = () => {
       <Route path="/salesman/shop-settings" element={<PrivateRoute element={<Shopsettings />} requiredRole="" />} />
       <Route path="/salesman/shop-listproduct" element={<PrivateRoute element={<ListProductByIdShop />} requiredRole="" />} />
       <Route path="/salesman/shop-addproduct" element={<PrivateRoute element={<AddProducts />} requiredRole="" />} />
+
+
+
+      {/* đặt hàng */}
+
+      <Route path="/order/listorder" element={<PrivateRoute element={<ListOrder />} requiredRole="" />} />
+      <Route path="/user/purchase" element={<PrivateRoute element={<Purchase />} requiredRole="" />} />
 
 
 

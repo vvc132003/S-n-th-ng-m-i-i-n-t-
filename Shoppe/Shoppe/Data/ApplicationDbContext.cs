@@ -11,6 +11,11 @@ namespace Shoppe.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartDetail> CartDetails { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<ShippingAddresses> ShippingAddresses { get; set; }
+
+
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -36,6 +41,11 @@ namespace Shoppe.Data
                      .WithOne(o => o.User)
                      .HasForeignKey(o => o.UserId)
                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(u => u.ShippingAddresses)
+                     .WithOne(o => o.User)
+                     .HasForeignKey(o => o.UserId)
+                     .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Shop>(entity =>
@@ -47,7 +57,12 @@ namespace Shoppe.Data
                       .HasForeignKey(p => p.ShopId)
                       .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasMany(s => s.SubOrders)
+                entity.HasMany(s => s.Orders)
+                     .WithOne(so => so.Shop)
+                     .HasForeignKey(so => so.ShopId)
+                     .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(s => s.CartDetails)
                      .WithOne(so => so.Shop)
                      .HasForeignKey(so => so.ShopId)
                      .OnDelete(DeleteBehavior.Restrict);
@@ -97,26 +112,21 @@ namespace Shoppe.Data
             {
                 entity.HasKey(o => o.Id);
 
-                entity.HasMany(o => o.SubOrders)
+                entity.HasMany(o => o.OrderDetails)
                       .WithOne(so => so.Order)
                       .HasForeignKey(so => so.OrderId)
                       .OnDelete(DeleteBehavior.Restrict);
 
             });
 
-            modelBuilder.Entity<SubOrder>(entity =>
-            {
-                entity.HasKey(so => so.Id);
-
-                entity.HasMany(so => so.OrderDetails)
-                      .WithOne(od => od.SubOrder)
-                      .HasForeignKey(od => od.SubOrderId)
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
-
+         
             modelBuilder.Entity<OrderDetail>(entity =>
             {
                 entity.HasKey(od => od.Id);
+            });
+            modelBuilder.Entity<ShippingAddresses>(entity =>
+            {
+                entity.HasKey(sh => sh.Id);
             });
         }
     }

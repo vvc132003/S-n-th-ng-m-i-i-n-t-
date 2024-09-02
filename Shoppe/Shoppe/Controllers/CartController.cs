@@ -55,6 +55,7 @@ namespace Shoppe.Controllers
                     Product = product,
                     Shop = shop,
                 };
+                detail.Shop = null;
                 detail.Cart = null;
                 detail.Product = null;
                 modeldatas.Add(modeldata);
@@ -83,6 +84,7 @@ namespace Shoppe.Controllers
                 cartDetail.Quantity = Quantity;
                 cartDetail.TotalPrice = product.Price * cartDetail.Quantity;
                 cartDetail.CartId = cartId;
+                cartDetail.ShopId = product.ShopId;
                 await cartDetailsService.AddcartDetail(cartDetail);
                 product.Quantity = product.Quantity - Quantity;
                 await productService.UpdateCProductAsync(product);
@@ -93,6 +95,7 @@ namespace Shoppe.Controllers
                 cartDetail1.Quantity += Quantity;
                 cartDetail1.TotalPrice = product.Price * cartDetail1.Quantity;
                 cartDetail1.CartId = cartId;
+                cartDetail1.ShopId = product.ShopId;
                 await cartDetailsService.UpdateCartAsync(cartDetail1);
                 product.Quantity = product.Quantity - Quantity;
                 await productService.UpdateCProductAsync(product);

@@ -32,7 +32,11 @@ namespace Shoppe.Controllers
         public async Task<IActionResult> GetAllProductByIdUser(int UserId)
         {
             Shop shop = await shopService.GetShopsByIdUserAsync(UserId);
-            List<Product> products = await productService.GetProductsByIdShopAsync(shop.Id);
+            if(shop == null)
+            {
+                return Ok();
+            }
+            List <Product> products = await productService.GetProductsByIdShopAsync(shop.Id);
             var productsData = new List<object>();
             foreach (Product product in products)
             {

@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import CustomerLayout from '../Layout/CustomerLayout';
-import { Card, Col, Row, Alert, Spinner, Button, InputGroup, FormControl } from 'react-bootstrap';
+import { Card, Col, Row, Alert, Spinner, Button, InputGroup, FormControl, Form } from 'react-bootstrap';
 import { cartbyiduser, deleteQuantityccart, AddQuantityccart, Deletecarrtdeltal } from '../../Service/CartService';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaTag } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { quantity } from '../../Service/CartService';
+import { AddOrder } from '../../Service/OrderService';
+
 import { Helmet } from 'react-helmet-async';
+import { FaSpinner, FaShoppingCart } from 'react-icons/fa';
 
 
-const ListCart = () => {
+const ListOrder = () => {
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadings, setLoadings] = useState(false);
+
     const [error, setError] = useState(null);
-    const [quantitys, setQuantity] = useState(1); // State to manage the quantity
+    const [quantitys, setQuantity] = useState(1);
     const [cartQuantity, setCartQuantity] = useState(0);
 
     const navigate = useNavigate();
@@ -39,45 +44,21 @@ const ListCart = () => {
         }
     };
 
-    const DeleteQuantity = async (ProductId) => {
-        const user = JSON.parse(sessionStorage.getItem('users'));
-        if (user && user.id) {
-            try {
-                await deleteQuantityccart(user.id, ProductId);
-                toast.success('Xoá sản phẩm khỏi giỏ hàng thành công!');
-                await fetchCart();
-            } catch (error) {
-                console.error('Error fetching cart:', error);
-            }
-        } else {
-            navigate('/login');
-        }
-    };
 
-    const DeleteCart = async (ProductId) => {
+    const AddOrders = async () => {
         const user = JSON.parse(sessionStorage.getItem('users'));
         if (user && user.id) {
+            setLoadings(true);
             try {
-                await Deletecarrtdeltal(user.id, ProductId);
-                toast.success('Xoá sản phẩm khỏi giỏ hàng thành công!');
+                await AddOrder(user.id);
+                toast.success('Thanh toán thành công!');
                 await fetchCart();
+                navigate('/user/purchase');
             } catch (error) {
                 console.error('Error fetching cart:', error);
-            }
-        } else {
-            navigate('/login');
-        }
-    };
-
-    const AddQuantity = async (ProductId) => {
-        const user = JSON.parse(sessionStorage.getItem('users'));
-        if (user && user.id) {
-            try {
-                await AddQuantityccart(user.id, ProductId);
-                toast.success('Thêm sản phẩm vào giỏ hàng thành công!');
-                await fetchCart();
-            } catch (error) {
-                console.error('Error fetching cart:', error);
+                toast.error('Đã xảy ra lỗi khi thanh toán.');
+            } finally {
+                setLoadings(false);
             }
         } else {
             navigate('/login');
@@ -104,23 +85,22 @@ const ListCart = () => {
         if (!acc[item.shop.id]) {
             acc[item.shop.id] = {
                 shop: item.shop,
-                items: []
+                items: [],
+                totalPrice: 0
+
             };
         }
         acc[item.shop.id].items.push(item);
+        acc[item.shop.id].totalPrice += item.product.price * item.cartDetail.quantity;
+
         return acc;
     }, {});
-
-    // const allShops = Object.values(groupedCart).map(group => group.shop);
-
-    // console.log(allShops);
-
 
 
     return (
         <>
             <Helmet>
-                <title>Giỏ Hàng</title>
+                <title>Đặt hàng</title>
             </Helmet>
             <CustomerLayout handleCartUpdate={handleCartUpdate}>
                 {loading ? (
@@ -137,7 +117,7 @@ const ListCart = () => {
                                 <>
                                     <div style={{ paddingBottom: '20px' }}>
                                         <Card.Text className="text-muted mb-0">
-                                        Giỏ Hàng > Danh Sách Giỏ Hàng
+                                        > Đặt hàng
                                         </Card.Text>
                                     </div>
                                     <Row>
@@ -145,20 +125,9 @@ const ListCart = () => {
                                             <Card className="shadow-sm">
                                                 <Card.Body style={{ padding: '20px 40px' }}>
                                                     <Row className="align-items-center">
-                                                        <Col md={5}>
+                                                        <Col md={6}>
                                                             <Row>
-                                                                <Col md={1}>
-                                                                    <Card.Text className="mb-0">
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            id="productCheckbox"
-                                                                            name="productCheckbox"
-                                                                            value="product"
-                                                                            className="form-check-input"
-                                                                        />
-                                                                    </Card.Text>
-                                                                </Col>
-                                                                <Col md={11}>
+                                                                <Col md={12}>
                                                                     <Card.Text className="mb-0">Sản Phẩm</Card.Text>
                                                                 </Col>
                                                             </Row>
@@ -170,10 +139,7 @@ const ListCart = () => {
                                                             <Card.Text className="text-muted mb-0">Số Lượng</Card.Text>
                                                         </Col>
                                                         <Col md={2} className="text-center">
-                                                            <Card.Text className="text-muted mb-0">Số Tiền</Card.Text>
-                                                        </Col>
-                                                        <Col md={1} className="text-center">
-                                                            <Card.Text className="text-muted mb-0">Thao tác</Card.Text>
+                                                            <Card.Text className="text-muted mb-0">Thành Tiền</Card.Text>
                                                         </Col>
                                                     </Row>
                                                 </Card.Body>
@@ -182,7 +148,7 @@ const ListCart = () => {
                                     </Row>
                                     <Row>
                                         {Object.keys(groupedCart).map((shopId) => {
-                                            const { shop, items } = groupedCart[shopId];
+                                            const { shop, items, totalPrice } = groupedCart[shopId];
                                             return (
                                                 <Col md={12} key={shopId} className="mb-3">
                                                     <Card className="shadow-sm">
@@ -190,18 +156,7 @@ const ListCart = () => {
                                                             <Row className="align-items-center">
                                                                 <Col md={4}>
                                                                     <Row>
-                                                                        <Col md={1} className="d-flex align-items-center">
-                                                                            <Card.Text className="mb-0">
-                                                                                <input
-                                                                                    type="checkbox"
-                                                                                    id={`shopCheckbox-${shopId}`}
-                                                                                    name="shopCheckbox"
-                                                                                    value={shopId}
-                                                                                    className="form-check-input"
-                                                                                />
-                                                                            </Card.Text>
-                                                                        </Col>
-                                                                        <Col md={2} className="d-flex align-items-center">
+                                                                        <Col md={3} className="d-flex align-items-center">
                                                                             <Card.Img
                                                                                 variant="top"
                                                                                 src={shop.avatar || 'avatar.png'}
@@ -209,7 +164,7 @@ const ListCart = () => {
                                                                                 style={{ height: '20px', width: '20px', objectFit: 'cover' }}
                                                                             />
                                                                         </Col>
-                                                                        <Col md={9} style={{ marginLeft: '-35px' }}>
+                                                                        <Col md={9} style={{ marginLeft: '-60px' }}>
                                                                             <Link to={`/shop?idshop=${shop.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
                                                                                 <Card.Text className="mb-0" style={{ fontSize: '0.9rem' }}>
                                                                                     {shop.shopName}
@@ -231,20 +186,9 @@ const ListCart = () => {
                                                                         borderBottom: index < items.length - 1 ? '1px solid #d5d6d6' : 'none',
                                                                     }}
                                                                 >
-                                                                    <Col md={5}>
+                                                                    <Col md={6}>
                                                                         <Row>
-                                                                            <Col md={1} className="d-flex align-items-center">
-                                                                                <Card.Text className="mb-0">
-                                                                                    <input
-                                                                                        type="checkbox"
-                                                                                        id={`productCheckbox-${item.product.id}`}
-                                                                                        name="productCheckbox"
-                                                                                        value={item.product.id}
-                                                                                        className="form-check-input"
-                                                                                    />
-                                                                                </Card.Text>
-                                                                            </Col>
-                                                                            <Col md={3} className="text-center">
+                                                                            <Col md={4} className="text-center">
                                                                                 <Card.Img
                                                                                     variant="top"
                                                                                     src={item.product.avatar || 'avatar.png'}
@@ -286,60 +230,86 @@ const ListCart = () => {
                                                                         </Card.Text>
                                                                     </Col>
                                                                     <Col md={2} className="">
-                                                                        <InputGroup style={{ maxWidth: '140px', margin: '0 auto' }}>
-                                                                            <Button
-                                                                                variant="outline-secondary"
-                                                                                onClick={() => DeleteQuantity(item.product.id)}
-                                                                                style={{ fontSize: '1rem', width: '40px', height: '40px' }}
-                                                                            >
-                                                                                -
-                                                                            </Button>
-                                                                            <FormControl
-                                                                                value={item.cartDetail.quantity}
-                                                                                onChange={(e) => setQuantity(Number(e.target.value))}
-                                                                                style={{ textAlign: 'center', fontSize: '1rem', border: 'none', marginRight: '3px' }}
-                                                                                type="text"
-                                                                                min="1"
-                                                                            />
-                                                                            <Button
-                                                                                variant="outline-secondary"
-                                                                                onClick={() => AddQuantity(item.product.id)}
-                                                                                style={{ fontSize: '1rem', width: '40px', height: '40px' }}
-                                                                            >
-                                                                                +
-                                                                            </Button>
-                                                                        </InputGroup>
+                                                                        <FormControl
+                                                                            value={item.cartDetail.quantity}
+                                                                            onChange={(e) => setQuantity(Number(e.target.value))}
+                                                                            style={{ textAlign: 'center', fontSize: '1rem', border: 'none', marginRight: '3px' }}
+                                                                            type="text"
+                                                                            min="1"
+                                                                            disabled
+                                                                        />
                                                                     </Col>
                                                                     <Col md={2} className="text-center">
                                                                         <Card.Text className="text-danger mb-0">
                                                                             đ {item.cartDetail.totalPrice.toLocaleString()}
                                                                         </Card.Text>
                                                                     </Col>
-                                                                    <Col md={1} className="text-center">
-                                                                        <Button
-                                                                            variant="link"
-                                                                            onClick={() => DeleteCart(item.product.id)}
-                                                                            className="text-decoration-none text-black p-0"
-                                                                        >
-                                                                            Xoá
-                                                                        </Button>
-                                                                    </Col>
                                                                 </Row>
                                                             ))}
                                                         </Card.Body>
-                                                        <Card.Text style={{ padding: '20px 16px', marginBottom: '0', borderTop: '1px solid #d5d6d6' }}>
+                                                        <Card.Text style={{ padding: '20px 40px', marginBottom: '0', borderTop: '1px solid #d5d6d6', backgroundColor: '#f5f5f5' }}>
                                                             <Row className="align-items-center">
+                                                                <Col md={12}>
+                                                                    <Row>
+                                                                        <Col md={5}>
+                                                                            <Row className='align-items-center'>
+                                                                                <Col md={3}>
+                                                                                    <Card.Text className="mb-0">
+                                                                                        Lời nhắn:
+                                                                                    </Card.Text>
+                                                                                </Col>
+                                                                                <Col md={9}>
+                                                                                    <Form.Group className="">
+                                                                                        <Form.Control
+                                                                                            as="input"
+                                                                                            rows={3}
+                                                                                            placeholder="Lưu ý cho người bán..."
+                                                                                        />
+                                                                                    </Form.Group>
+                                                                                </Col>
+                                                                            </Row>
+                                                                        </Col>
+                                                                        <Col md={7}>
+                                                                            <Row style={{ borderLeft: '1px solid #d5d6d6' }}>
+                                                                                <Col md={3}>
+                                                                                    <Card.Text className="mb-0">
+                                                                                        Đơn vị vận chuyển:
+                                                                                    </Card.Text>
+                                                                                </Col>
+                                                                                <Col md={9}>
+                                                                                    <Card.Text className="mb-0">
+                                                                                        Đảm bảo nhận hàng từ 30 Tháng 8 - 31 Tháng 8
+                                                                                        Nhận Voucher trị giá ₫15.000 nếu đơn hàng được giao đến bạn sau ngày 31 Tháng 8 2024.
+                                                                                        (Đơn hàng sẽ được giao trước Lễ)
+                                                                                    </Card.Text>
+                                                                                </Col>
+                                                                            </Row>
+                                                                        </Col>
+                                                                    </Row>
+                                                                </Col>
+                                                            </Row>
+                                                        </Card.Text>
+                                                        <Card.Text style={{ padding: '20px 40px', marginBottom: '0', borderTop: '1px solid #d5d6d6', backgroundColor: '#f5f5f5' }}>
+                                                            <Row className="align-items-center">
+                                                                <Col md={8}>
+                                                                    <Card.Text className="mb-0">
+                                                                    </Card.Text>
+                                                                </Col>
                                                                 <Col md={4}>
                                                                     <Row>
-                                                                        <Col md={1} className="d-flex align-items-center">
+                                                                        <Col md={8}>
+                                                                            <Row>
+                                                                                <Col md={12} style={{ marginLeft: '-0px' }}>
+                                                                                    <Card.Text className="mb-0">
+                                                                                        Tổng số tiền
+                                                                                    </Card.Text>
+                                                                                </Col>
+                                                                            </Row>
                                                                         </Col>
-                                                                        <Col md={2} className="d-flex align-items-center">
-                                                                            <FaTag style={{ color: '#ff0000', fontSize: '1.5rem', marginRight: '8px' }} />
-                                                                        </Col>
-                                                                        <Col md={9} style={{ marginLeft: '-35px' }}>
-                                                                            <Link to={`/shop?idshop=${shop.id}`} style={{ textDecoration: 'none', color: '#05a', fontSize: '0.9rem' }}>
-                                                                                Thêm mã giảm giá của Shop
-                                                                            </Link>
+                                                                        <Col md={4}>
+                                                                            <Card.Text className="mb-0" style={{ color: 'red', fontSize: '18px' }}>
+                                                                                đ {totalPrice.toLocaleString()}
+                                                                            </Card.Text>
                                                                         </Col>
                                                                     </Row>
                                                                 </Col>
@@ -349,6 +319,7 @@ const ListCart = () => {
                                                 </Col>
                                             );
                                         })}
+
                                     </Row>
 
                                     <Row>
@@ -356,18 +327,18 @@ const ListCart = () => {
                                             <Card className="shadow-sm">
                                                 <Card.Text style={{ padding: '20px 40px', marginBottom: '0', borderBottom: '1px solid #d5d6d6' }}>
                                                     <Row className="justify-content-end">
-                                                        <Col md={7}>
+                                                        <Col md={8}>
+                                                            <Card.Text className="mb-0">
+                                                                Phương thức thanh toán
+                                                            </Card.Text>
                                                         </Col>
-                                                        <Col md={5}>
+                                                        <Col md={4}>
                                                             <Row>
                                                                 <Col md={8}>
                                                                     <Row>
-                                                                        <Col md={2} className="d-flex align-items-center">
-                                                                            <FaTag style={{ color: '#007bff', fontSize: '1.5rem' }} />
-                                                                        </Col>
-                                                                        <Col md={10} style={{ marginLeft: '-20px' }}>
+                                                                        <Col md={12} style={{ marginLeft: '-0px' }}>
                                                                             <Card.Text className="mb-0">
-                                                                                Shopee Voucher
+                                                                                Thanh toán khi nhận hàng
                                                                             </Card.Text>
                                                                         </Col>
                                                                     </Row>
@@ -375,7 +346,7 @@ const ListCart = () => {
                                                                 <Col md={4}>
                                                                     <Link to={`/`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
                                                                         <Link to={`/`} style={{ textDecoration: 'none', color: '#05a', fontSize: '0.9rem' }}>
-                                                                            Chọn hoặc nhập mã
+                                                                            Thay đổi
                                                                         </Link>
                                                                     </Link>
                                                                 </Col>
@@ -385,33 +356,57 @@ const ListCart = () => {
                                                 </Card.Text>
                                                 <Card.Body style={{ padding: '20px 40px' }}>
                                                     <Row className="justify-content-end">
-                                                        <Col md={7}>
+                                                        <Col md={8}>
                                                         </Col>
-                                                        <Col md={5}>
+                                                        <Col md={4}>
                                                             <Row>
                                                                 <Col md={8}>
                                                                     <Row>
-                                                                        <Col md={2} className="d-flex align-items-center">
-                                                                            <Card.Text className="mb-0">
-                                                                                <input
-                                                                                    type="checkbox"
-                                                                                    id="productCheckbox"
-                                                                                    name="productCheckbox"
-                                                                                    value="product"
-                                                                                    className="form-check-input"
-                                                                                />
-                                                                            </Card.Text>
-                                                                        </Col>
-                                                                        <Col md={10} style={{ marginLeft: '-20px' }}>
-                                                                            <Card.Text className="mb-0">
-                                                                                Bạn chưa chọn sản phẩm
+
+                                                                        <Col md={12} style={{ marginLeft: '-0px' }}>
+                                                                            <Card.Text className="mb-3">
+                                                                                Tổng tiền hàng
                                                                             </Card.Text>
                                                                         </Col>
                                                                     </Row>
                                                                 </Col>
                                                                 <Col md={4}>
-                                                                    <Card.Text className="mb-0">
-                                                                        -0đ
+                                                                    <Card.Text className="mb-3">
+                                                                        đ {calculateTotal().toLocaleString()}
+                                                                    </Card.Text>
+                                                                </Col>
+                                                            </Row>
+                                                            <Row>
+                                                                <Col md={8}>
+                                                                    <Row>
+
+                                                                        <Col md={12} style={{ marginLeft: '-0px' }}>
+                                                                            <Card.Text className="mb-3">
+                                                                                Phí vận chuyển
+                                                                            </Card.Text>
+                                                                        </Col>
+                                                                    </Row>
+                                                                </Col>
+                                                                <Col md={4}>
+                                                                    <Card.Text className="mb-3">
+                                                                        đ 10
+                                                                    </Card.Text>
+                                                                </Col>
+                                                            </Row>
+                                                            <Row>
+                                                                <Col md={8}>
+                                                                    <Row>
+
+                                                                        <Col md={12} style={{ marginLeft: '-0px' }}>
+                                                                            <Card.Text className="mb-0">
+                                                                                Tổng thanh toán
+                                                                            </Card.Text>
+                                                                        </Col>
+                                                                    </Row>
+                                                                </Col>
+                                                                <Col md={4}>
+                                                                    <Card.Text className="mb-0" style={{ fontWeight: 'bold', color: 'red', fontSize: '20px' }}>
+                                                                        đ {calculateTotal().toLocaleString()}
                                                                     </Card.Text>
                                                                 </Col>
                                                             </Row>
@@ -420,52 +415,27 @@ const ListCart = () => {
                                                 </Card.Body>
                                                 <Card.Text style={{ padding: '20px 40px', marginBottom: '0', borderTop: '1px solid #d5d6d6' }}>
                                                     <Row className="align-items-center">
-                                                        <Col md={6}>
-                                                            <Row>
-                                                                <Col md={1} className="d-flex align-items-center">
-                                                                    <Card.Text className="mb-0">
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            id="productCheckbox"
-                                                                            name="productCheckbox"
-                                                                            value="product"
-                                                                            className="form-check-input"
-                                                                        />
-                                                                    </Card.Text>
-                                                                </Col>
-                                                                <Col md={5} className="d-flex align-items-center">
-                                                                    <Card.Text className="mb-0 " style={{ fontSize: '18px' }}>
-                                                                        Chọn Tất Cả (1)
-                                                                    </Card.Text>
-                                                                </Col>
-                                                                <Col md={2} style={{ marginLeft: '-35px' }}>
-                                                                    <Card.Text className="mb-0 " style={{ fontSize: '18px' }}>
-                                                                        Xóa
-                                                                    </Card.Text>
-                                                                </Col>
-                                                                <Col md={4} style={{ color: 'red', cursor: 'pointer' }}>
-                                                                    <Card.Text className="mb-0 " style={{ fontSize: '18px' }}>
-                                                                        Lưu vào...
-                                                                    </Card.Text>
-                                                                </Col>
-                                                            </Row>
+                                                        <Col md={8}>
+                                                            <Card.Text className="mb-0">
+                                                                Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo Điều khoản Shopee
+                                                            </Card.Text>
                                                         </Col>
-                                                        <Col md={1}>
-                                                        </Col>
-                                                        <Col md={5}>
+                                                        <Col md={4}>
                                                             <Row>
-                                                                <Col md={8} className="d-flex align-items-center" style={{ fontSize: '18px' }}>
-                                                                    Tổng thanh toán:
-                                                                    <Card.Text className="mb-0 " style={{ fontSize: '18px', marginLeft: '10px', color: 'red' }}>
-                                                                        đ {calculateTotal().toLocaleString()}
-                                                                    </Card.Text>
-                                                                </Col>
-                                                                <Col md={4}>
-                                                                    <Link to="/order/listorder" style={{ textDecoration: 'none' }}>
-                                                                    <Button variant="danger" style={{ width: '100%', padding: '10px 20px' }}>
-                                                                            Mua Hàng
-                                                                        </Button>
-                                                                    </Link>
+                                                                <Col md={12}>
+                                                                    <Button onClick={AddOrders} variant="danger" style={{ width: '100%', padding: '10px 20px' }}>
+                                                                        {loadings ? (
+                                                                            <>
+                                                                                <FaSpinner className="spinner" style={{ marginRight: '10px' }} />
+                                                                                Đặt Hàng...
+                                                                            </>
+                                                                        ) : (
+                                                                            <>
+                                                                                <FaShoppingCart style={{ marginRight: '10px' }} />
+                                                                                Đặt Hàng
+                                                                            </>
+                                                                        )}
+                                                                    </Button>
                                                                 </Col>
                                                             </Row>
                                                         </Col>
@@ -484,11 +454,11 @@ const ListCart = () => {
                                         style={{ width: '10%', height: 'auto', objectFit: 'cover', marginBottom: '10px' }}
                                     />
                                     <Card.Text className="text-muted mb-0">
-                                        Giỏ hàng của bạn còn trống
+                                        Không có sản phầm nào để đặt hàng
                                     </Card.Text>
-                                    <Link to="/" style={{ textDecoration: 'none' }}>
+                                    <Link to="/cart/listcart" style={{ textDecoration: 'none' }}>
                                         <Button variant="danger" style={{ padding: '10px 60px', marginTop: '10px' }}>
-                                            Mua ngay
+                                            Giỏ hàng
                                         </Button>
                                     </Link>
                                 </div>
@@ -501,4 +471,4 @@ const ListCart = () => {
     );
 };
 
-export default ListCart;
+export default ListOrder;

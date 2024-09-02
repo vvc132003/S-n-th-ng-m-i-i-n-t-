@@ -11,6 +11,10 @@ namespace Shoppe.Model.EF
         public int ProductId { get; set; }
         public int? Quantity { get; set; }
         public decimal? TotalPrice { get; set; }
+        public int? ShopId { get; set; }
+
+        [ForeignKey("ShopId")]
+        public Shop? Shop { get; set; }
         public Cart? Cart { get; set; }
         public Product? Product { get; set; }
     }

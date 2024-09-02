@@ -60,6 +60,34 @@ namespace Shoppe.Service
             }
             return shop;
         }
+
+        public async Task<ShopDto> GetShopDTOByIdAsync(int? id)
+        {
+            // Fetch the shop entity from the database
+            var shop = await _context.Shops.FindAsync(id);
+
+            // Check if the shop exists
+            if (shop == null)
+            {
+                return null;
+            }
+
+            // Map the Shop entity to ShopDto
+            var shopDto = new ShopDto
+            {
+                Id = shop.Id,
+                ShopName = shop.ShopName,
+                Description = shop.Description,
+                Addresses = shop.Addresses,
+                Avatar = shop.Avatar,
+                Phonenumber = shop.Phonenumber,
+                UserId = shop.UserId
+            };
+
+            return shopDto;
+        }
+
+
         public async Task UpdateShopAsync(Shop shop)
         {
             _context.Shops.Update(shop);

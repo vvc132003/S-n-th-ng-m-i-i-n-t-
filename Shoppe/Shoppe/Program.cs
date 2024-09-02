@@ -11,6 +11,8 @@ builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<CartDetailsService>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<OrderDetailService>();
 
 
 builder.Services.AddControllers();

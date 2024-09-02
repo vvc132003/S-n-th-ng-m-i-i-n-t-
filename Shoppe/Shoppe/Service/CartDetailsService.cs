@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shoppe.Data;
+using Shoppe.Model.DTO;
 using Shoppe.Model.EF;
 
 namespace Shoppe.Service
@@ -20,6 +21,40 @@ namespace Shoppe.Service
                 .ToListAsync();
         }
 
+
+        public async Task<List<CartDetailDTO>> GetCartDTODetailByIdCartsAsync(int cartId)
+        {
+            return await _context.CartDetails
+                .Where(c => c.CartId == cartId)
+                .OrderByDescending(s => s.Id)
+                .Select(c => new CartDetailDTO
+                {
+                    Id = c.Id,
+                    CartId = c.CartId,
+                    ProductId = c.ProductId,
+                    ShopId = c.ShopId,
+                    Quantity = c.Quantity,
+                    TotalPrice = c.TotalPrice
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<CartDetailDTO>> GetCartDTODetailByShopidCartsAsync(int? ShopId)
+        {
+            return await _context.CartDetails
+                .Where(c => c.ShopId == ShopId)
+                .OrderByDescending(s => s.Id)
+                .Select(c => new CartDetailDTO
+                {
+                    Id = c.Id,
+                    CartId = c.CartId,
+                    ProductId = c.ProductId,
+                    ShopId = c.ShopId,
+                    Quantity = c.Quantity,
+                    TotalPrice = c.TotalPrice
+                })
+                .ToListAsync();
+        }
 
 
 
@@ -69,6 +104,27 @@ namespace Shoppe.Service
             _context.CartDetails.Remove(category);
             await _context.SaveChangesAsync();
         }
+
+
+        public async Task DeleteCartByProductId(int productId)
+        {
+            // Find the CartDetail that matches the given ProductId
+            var cartDetails = await _context.CartDetails
+                .Where(cd => cd.ProductId == productId)
+                .ToListAsync();
+
+            if (cartDetails.Count == 0)
+            {
+                throw new ArgumentException("No cart details found for the given product ID.");
+            }
+
+            // Remove the cart details from the context
+            _context.CartDetails.RemoveRange(cartDetails);
+            await _context.SaveChangesAsync();
+        }
+
+
+
         public async Task<int> GetTotalQuantityByCartIdAsync(int cartId)
         {
             var cartDetails = await _context.CartDetails

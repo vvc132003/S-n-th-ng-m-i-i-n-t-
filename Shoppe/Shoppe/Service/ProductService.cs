@@ -62,6 +62,37 @@ namespace Shoppe.Service
             }
             return product;
         }
+
+        public async Task<ProductDto> GetProductDTOByIdAsync(int? id)
+        {
+            // Retrieve the product entity
+            Product product = await _context.Products.FindAsync(id);
+
+            // Check if the product exists
+            if (product == null)
+            {
+                return null;
+            }
+
+            // Map the product entity to ProductDto
+            var productDto = new ProductDto
+            {
+                Id = product.Id,
+                ProductName = product.ProductName,
+                Description = product.Description,
+                Price = product.Price,
+                Avatar = product.Avatar,
+                Size = product.Size,
+                Color = product.Color,
+                Quantity = product.Quantity,
+                CreatedAt = product.CreatedAt,
+                ShopId = product.ShopId,
+                CategoryId = product.CategoryId
+            };
+
+            return productDto;
+        }
+
         public async Task UpdateCProductAsync(Product product)
         {
             _context.Products.Update(product);

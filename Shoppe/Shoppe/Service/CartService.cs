@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shoppe.Data;
+using Shoppe.Model.DTO;
 using Shoppe.Model.EF;
 
 namespace Shoppe.Service
@@ -60,6 +61,33 @@ namespace Shoppe.Service
         }
 
 
+        public async Task<CartDTO> CartDTOByUserIdAsync(int userId)
+        {
+            // Retrieve the cart entity
+            var cart = await _context.Carts
+                .Where(c => c.UserId == userId)
+                .FirstOrDefaultAsync();
+
+            // Check if the cart exists
+            if (cart == null)
+            {
+                return null;
+            }
+
+            // Map the Cart entity to CartDTO
+            var cartDTO = new CartDTO
+            {
+                Id = cart.Id,
+                UserId = cart.UserId,
+                CreatedAt = cart.CreatedAt,
+                TotalPrice = cart.TotalPrice
+            };
+
+            return cartDTO;
+        }
+
+
+
         public async Task UpdateCartAsync(Cart cart)
         {
             var carts = await _context.Carts.FindAsync(cart.Id);
@@ -78,7 +106,7 @@ namespace Shoppe.Service
             _context.Carts.Remove(category);
             await _context.SaveChangesAsync();
         }
-      
+
 
     }
 }

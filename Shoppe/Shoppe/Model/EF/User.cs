@@ -19,10 +19,12 @@ namespace Shoppe.Model.EF
         public DateTime? CreatedAt { get; set; }
         public string? Avatar { get; set; }
         public string? Phonenumber { get; set; }
-        public string IdGoogle { get; set; } = string.Empty;
+        public string? IdGoogle { get; set; } = string.Empty;
         public ICollection<Shop>? Shops { get; set; }
         public ICollection<Cart>? Carts { get; set; }
         public ICollection<Order>? Orders { get; set; }
+        public ICollection<ShippingAddresses>? ShippingAddresses { get; set; }
+
 
     }
 }

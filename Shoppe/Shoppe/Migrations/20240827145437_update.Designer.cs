@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shoppe.Data;
 
@@ -11,9 +12,11 @@ using Shoppe.Data;
 namespace Shoppe.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240827145437_update")]
+    partial class update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,9 +66,6 @@ namespace Shoppe.Migrations
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ShopId")
-                        .HasColumnType("int");
-
                     b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -74,8 +74,6 @@ namespace Shoppe.Migrations
                     b.HasIndex("CartId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ShopId");
 
                     b.ToTable("CartDetails");
                 });
@@ -209,54 +207,6 @@ namespace Shoppe.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Shoppe.Model.EF.ShippingAddresses", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AddressLine1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AddressLine2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RecipientName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ShippingAddresses");
-                });
-
             modelBuilder.Entity("Shoppe.Model.EF.Shop", b =>
                 {
                     b.Property<int>("Id")
@@ -311,6 +261,7 @@ namespace Shoppe.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdGoogle")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
@@ -357,16 +308,9 @@ namespace Shoppe.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Shoppe.Model.EF.Shop", "Shop")
-                        .WithMany("CartDetails")
-                        .HasForeignKey("ShopId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Cart");
 
                     b.Navigation("Product");
-
-                    b.Navigation("Shop");
                 });
 
             modelBuilder.Entity("Shoppe.Model.EF.Order", b =>
@@ -422,17 +366,6 @@ namespace Shoppe.Migrations
                     b.Navigation("Shop");
                 });
 
-            modelBuilder.Entity("Shoppe.Model.EF.ShippingAddresses", b =>
-                {
-                    b.HasOne("Shoppe.Model.EF.User", "User")
-                        .WithMany("ShippingAddresses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Shoppe.Model.EF.Shop", b =>
                 {
                     b.HasOne("Shoppe.Model.EF.User", "User")
@@ -468,8 +401,6 @@ namespace Shoppe.Migrations
 
             modelBuilder.Entity("Shoppe.Model.EF.Shop", b =>
                 {
-                    b.Navigation("CartDetails");
-
                     b.Navigation("Orders");
 
                     b.Navigation("Products");
@@ -480,8 +411,6 @@ namespace Shoppe.Migrations
                     b.Navigation("Carts");
 
                     b.Navigation("Orders");
-
-                    b.Navigation("ShippingAddresses");
 
                     b.Navigation("Shops");
                 });

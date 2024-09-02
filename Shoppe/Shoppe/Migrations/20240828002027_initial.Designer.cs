@@ -12,7 +12,7 @@ using Shoppe.Data;
 namespace Shoppe.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240824085429_initial")]
+    [Migration("20240828002027_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -106,6 +106,9 @@ namespace Shoppe.Migrations
                     b.Property<DateTime?>("OrderDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("ShopId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
@@ -117,9 +120,11 @@ namespace Shoppe.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ShopId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Shoppe.Model.EF.OrderDetail", b =>
@@ -130,6 +135,9 @@ namespace Shoppe.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
 
@@ -139,16 +147,13 @@ namespace Shoppe.Migrations
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SubOrderId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("SubOrderId");
-
-                    b.ToTable("OrderDetail");
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("Shoppe.Model.EF.Product", b =>
@@ -202,6 +207,54 @@ namespace Shoppe.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("Shoppe.Model.EF.ShippingAddresses", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AddressLine1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AddressLine2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostalCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RecipientName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ShippingAddresses");
+                });
+
             modelBuilder.Entity("Shoppe.Model.EF.Shop", b =>
                 {
                     b.Property<int>("Id")
@@ -237,35 +290,6 @@ namespace Shoppe.Migrations
                     b.ToTable("Shops");
                 });
 
-            modelBuilder.Entity("Shoppe.Model.EF.SubOrder", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ShopId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("SubTotal")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("ShopId");
-
-                    b.ToTable("SubOrder");
-                });
-
             modelBuilder.Entity("Shoppe.Model.EF.User", b =>
                 {
                     b.Property<int>("Id")
@@ -285,7 +309,6 @@ namespace Shoppe.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdGoogle")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
@@ -339,29 +362,36 @@ namespace Shoppe.Migrations
 
             modelBuilder.Entity("Shoppe.Model.EF.Order", b =>
                 {
+                    b.HasOne("Shoppe.Model.EF.Shop", "Shop")
+                        .WithMany("Orders")
+                        .HasForeignKey("ShopId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Shoppe.Model.EF.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Shop");
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("Shoppe.Model.EF.OrderDetail", b =>
                 {
+                    b.HasOne("Shoppe.Model.EF.Order", "Order")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Shoppe.Model.EF.Product", "Product")
                         .WithMany("OrderDetails")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Shoppe.Model.EF.SubOrder", "SubOrder")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("SubOrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                    b.Navigation("Order");
 
                     b.Navigation("Product");
-
-                    b.Navigation("SubOrder");
                 });
 
             modelBuilder.Entity("Shoppe.Model.EF.Product", b =>
@@ -383,6 +413,17 @@ namespace Shoppe.Migrations
                     b.Navigation("Shop");
                 });
 
+            modelBuilder.Entity("Shoppe.Model.EF.ShippingAddresses", b =>
+                {
+                    b.HasOne("Shoppe.Model.EF.User", "User")
+                        .WithMany("ShippingAddresses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Shoppe.Model.EF.Shop", b =>
                 {
                     b.HasOne("Shoppe.Model.EF.User", "User")
@@ -392,23 +433,6 @@ namespace Shoppe.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Shoppe.Model.EF.SubOrder", b =>
-                {
-                    b.HasOne("Shoppe.Model.EF.Order", "Order")
-                        .WithMany("SubOrders")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Shoppe.Model.EF.Shop", "Shop")
-                        .WithMany("SubOrders")
-                        .HasForeignKey("ShopId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Order");
-
-                    b.Navigation("Shop");
                 });
 
             modelBuilder.Entity("Shoppe.Model.EF.Cart", b =>
@@ -423,7 +447,7 @@ namespace Shoppe.Migrations
 
             modelBuilder.Entity("Shoppe.Model.EF.Order", b =>
                 {
-                    b.Navigation("SubOrders");
+                    b.Navigation("OrderDetails");
                 });
 
             modelBuilder.Entity("Shoppe.Model.EF.Product", b =>
@@ -435,14 +459,9 @@ namespace Shoppe.Migrations
 
             modelBuilder.Entity("Shoppe.Model.EF.Shop", b =>
                 {
+                    b.Navigation("Orders");
+
                     b.Navigation("Products");
-
-                    b.Navigation("SubOrders");
-                });
-
-            modelBuilder.Entity("Shoppe.Model.EF.SubOrder", b =>
-                {
-                    b.Navigation("OrderDetails");
                 });
 
             modelBuilder.Entity("Shoppe.Model.EF.User", b =>
@@ -450,6 +469,8 @@ namespace Shoppe.Migrations
                     b.Navigation("Carts");
 
                     b.Navigation("Orders");
+
+                    b.Navigation("ShippingAddresses");
 
                     b.Navigation("Shops");
                 });

@@ -26,8 +26,9 @@ namespace Shoppe.Model.EF
         [ForeignKey("UserId")]
         public User? User { get; set; }
         public ICollection<Product>? Products { get; set; }
-        public List<SubOrder>? SubOrders { get; set; }
+        public ICollection<Order>? Orders { get; set; }
 
+        public ICollection<CartDetail>? CartDetails { get; set; }
 
     }
 }
