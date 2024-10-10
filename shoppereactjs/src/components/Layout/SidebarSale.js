@@ -23,6 +23,12 @@ const SidebarSale = () => {
                         Danh sách sản phẩm
                     </Link>
                 </li>
+                <li className={`mb-3 ${isActive('/salesman/shop-statistical')}`}>
+                    <Link to="/salesman/shop-statistical" className="d-flex align-items-center text-decoration-none text-dark">
+                        <FaHome size={20} className="me-2" />
+                        Doanh thu
+                    </Link>
+                </li>
                 <li className={`mb-3 ${isActive('/salesman/shop-settings/payments')}`}>
                     <Link to="/salesman/shop-settings/payments" className="d-flex align-items-center text-decoration-none text-dark">
                         <FaWallet size={20} className="me-2" />

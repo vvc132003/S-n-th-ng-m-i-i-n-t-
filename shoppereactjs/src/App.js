@@ -1,69 +1,111 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import AdminDashboard from './components/AdminComponents/AdminDashboard';
-import ListCustomer from './components/CustomerComponents/ListCustomer';
-import ListUser from './components/UserComponents/ListUser';
 
-import Login from './components/UserComponents/Login';
+///////////// admin ///////////////
+// user 
+import ListUser from './components/Admin/UserComponents/ListUser';
+import Login from './components/Admin/UserComponents/Login';
+import AddUser from './components/Admin/UserComponents/AddUser';
+import EditUser from './components/Admin/UserComponents/EditUser';
+//shop
+import ListShop from './components/Admin/ShopComponents/ListShop';
+import AddShop from './components/Admin/ShopComponents/AddShop';
+import EditShop from './components/Admin/ShopComponents/EditShop';
+
+
+// category
+import ListCategory from './components/Admin/CategoryComponents/ListCategory';
+import AddCategory from './components/Admin/CategoryComponents/AddCategory';
+import EditCategory from './components/Admin/CategoryComponents/EditCategory';
+// product
+import ListProduct from './components/Admin/ProductComponents/ListProduct';
+import AddProduct from './components/Admin/ProductComponents/AddProduct';
+import ProductDetail from './components/Admin/ProductComponents/ProductDetail';
+
+// cart
+import ListCart from './components/Home/CartComponents/ListCart';
+
+
+// ORDER
+import ListOrder from './components/Home/OrderComponents/ListOrder';
+import Purchase from './components/Home/OrderComponents/Purchase';
+
+
+
+///////////// home ///////////////
+// product
+import CustomerHome from './components/Home/ProductComponents/CustomerHome ';
+
+
+
+
+///////////// Salesman ///////////////
+import Salesman from './components/Salesman/SalesmanComponents/Salesman';
+import Shopsettings from './components/Salesman/SalesmanComponents/Shopsettings';
+import ListProductByIdShop from './components/Salesman/SalesmanComponents/ListProductByIdShop';
+import AddProducts from './components/Salesman/SalesmanComponents/AddProduct';
+import Statistical from './components/Salesman/SalesmanComponents/Statistical';
+
+
+
 import PrivateRoute from './components/hooks/PrivateRoute';
-import DashboardHome from './components/AdminComponents/DashboardHome';
-import AddUser from './components/UserComponents/AddUser';
-import EditUser from './components/UserComponents/EditUser';
-import ListShop from './components/ShopComponents/ListShop';
-import AddShop from './components/ShopComponents/AddShop';
-import EditShop from './components/ShopComponents/EditShop';
-import ListCategory from './components/CategoryComponents/ListCategory';
-import AddCategory from './components/CategoryComponents/AddCategory';
-import EditCategory from './components/CategoryComponents/EditCategory';
-import ListProduct from './components/ProductComponents/ListProduct';
-import AddProduct from './components/ProductComponents/AddProduct';
-import CustomerHome from './components/CustomerComponents/CustomerHome ';
-import ProductDetail from './components/ProductComponents/ProductDetail';
-import ListCart from './components/CartComponents/ListCart';
-import Salesman from './components/SalesmanComponents/Salesman';
-import Shopsettings from './components/SalesmanComponents/Shopsettings';
-import ListProductByIdShop from './components/SalesmanComponents/ListProductByIdShop';
-import AddProducts from './components/SalesmanComponents/AddProduct';
-import ListOrder from './components/OrderComponents/ListOrder';
-import Purchase from './components/OrderComponents/Purchase';
+import Chat from './components/Home/Chat/Chat';
+import ListPhong from './components/Admin/ProductComponents/ListPhong';
+
 
 
 const App = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/admin" element={<PrivateRoute element={<AdminDashboard />} requiredRole="Quản lý" />} />
-      <Route path="/admin/dashboard" element={<PrivateRoute element={<DashboardHome />} requiredRole="Quản lý" />} />
-      <Route path="/admin/listuser" element={<PrivateRoute element={<ListUser />} requiredRole="Quản lý" />} />
-      <Route path="/admin/AddUser" element={<PrivateRoute element={<AddUser />} requiredRole="Quản lý" />} />
-      <Route path="/admin/edituser" element={<EditUser />} requiredRole="Quản lý" />
+      <Route path="/phong" element={<ListPhong />} />
 
+      {/* <Route path="/admin" element={<PrivateRoute element={<AdminDashboard />} requiredRole="Quản lý" />} /> */}
+      {/* <Route path="/admin/dashboard" element={<PrivateRoute element={<DashboardHome />} requiredRole="Quản lý" />} /> */}
+
+
+      {/* admin  */}
+      {/* user */}
+      <Route path="/admin/user/listuser" element={<PrivateRoute element={<ListUser />} requiredRole="Quản lý" />} />
+      <Route path="/admin/user/AddUser" element={<PrivateRoute element={<AddUser />} requiredRole="Quản lý" />} />
+      <Route path="/admin/user/edituser" element={<EditUser />} requiredRole="Quản lý" />
 
       {/* shop */}
-      <Route path="/admin/listshop" element={<PrivateRoute element={<ListShop />} requiredRole="Quản lý" />} />
-      <Route path="/admin/addShop" element={<PrivateRoute element={<AddShop />} requiredRole="Quản lý" />} />
-      <Route path="/admin/editshop" element={<EditShop />} requiredRole="Quản lý" />
+      <Route path="/admin/shop/listshop" element={<PrivateRoute element={<ListShop />} requiredRole="Quản lý" />} />
+      <Route path="/admin/shop/addShop" element={<PrivateRoute element={<AddShop />} requiredRole="Quản lý" />} />
+      <Route path="/admin/shop/editshop" element={<EditShop />} requiredRole="Quản lý" />
 
       {/* category */}
-      <Route path="/admin/listcategory" element={<PrivateRoute element={<ListCategory />} requiredRole="Quản lý" />} />
-      <Route path="/admin/addcategory" element={<PrivateRoute element={<AddCategory />} requiredRole="Quản lý" />} />
-      <Route path="/admin/editcategory" element={<EditCategory />} requiredRole="Quản lý" />
+      <Route path="/admin/category/listcategory" element={<PrivateRoute element={<ListCategory />} requiredRole="Quản lý" />} />
+      <Route path="/admin/category/addcategory" element={<PrivateRoute element={<AddCategory />} requiredRole="Quản lý" />} />
+      <Route path="/admin/category/editcategory" element={<EditCategory />} requiredRole="Quản lý" />
 
       {/* product */}
-      <Route path="/admin/listproduct" element={<PrivateRoute element={<ListProduct />} requiredRole="Quản lý" />} />
-      <Route path="/admin/addProduct" element={<PrivateRoute element={<AddProduct />} requiredRole="Quản lý" />} />
-      <Route path="/product/product" element={<ProductDetail />} requiredRole="" />
+      <Route path="/admin/product/listproduct" element={<PrivateRoute element={<ListProduct />} requiredRole="Quản lý" />} />
+      <Route path="/admin/product/addProduct" element={<PrivateRoute element={<AddProduct />} requiredRole="Quản lý" />} />
+     
 
 
 
-      {/* khách hàng */}
+
+
+
+
+
+
+
+      {/* home HOME */}
       <Route path="/" element={<PrivateRoute element={<CustomerHome />} requiredRole="" />} />
-      <Route path="/ListCustomer" element={<PrivateRoute element={<ListCustomer />} requiredRole="" />} />
+
+      {/* product */}
+      <Route path="/home/product" element={<ProductDetail />} requiredRole="" />
 
       {/* cart */}
-
       <Route path="/cart/listCart" element={<PrivateRoute element={<ListCart />} requiredRole="" />} />
 
+      {/* đặt hàng */}
+      <Route path="/order/listorder" element={<PrivateRoute element={<ListOrder />} requiredRole="" />} />
+      <Route path="/user/purchase" element={<PrivateRoute element={<Purchase />} requiredRole="" />} />
 
 
       {/* shop của tôi */}
@@ -71,13 +113,13 @@ const App = () => {
       <Route path="/salesman/shop-settings" element={<PrivateRoute element={<Shopsettings />} requiredRole="" />} />
       <Route path="/salesman/shop-listproduct" element={<PrivateRoute element={<ListProductByIdShop />} requiredRole="" />} />
       <Route path="/salesman/shop-addproduct" element={<PrivateRoute element={<AddProducts />} requiredRole="" />} />
+      <Route path="/salesman/shop-statistical" element={<PrivateRoute element={<Statistical />} requiredRole="" />} />
+
+
+      <Route path="/home/chat/chat" element={<PrivateRoute element={<Chat />} requiredRole="" />} />
 
 
 
-      {/* đặt hàng */}
-
-      <Route path="/order/listorder" element={<PrivateRoute element={<ListOrder />} requiredRole="" />} />
-      <Route path="/user/purchase" element={<PrivateRoute element={<Purchase />} requiredRole="" />} />
 
 
 

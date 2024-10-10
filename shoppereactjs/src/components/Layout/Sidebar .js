@@ -30,26 +30,26 @@ const Sidebar = ({ userName }) => {
         </button>
       </div>
       <ul>
-        <li className={location.pathname === '/admin/listuser' ? 'active' : ''}>
-          <Link to="/admin/listuser" className="d-flex align-items-center">
+        <li className={location.pathname === '/admin/user/listuser' ? 'active' : ''}>
+          <Link to="/admin/user/listuser" className="d-flex align-items-center">
             <FaUsers style={{ marginRight: '10px' }} />
             List User
           </Link>
         </li>
-        <li className={location.pathname === '/admin/listshop' ? 'active' : ''}>
-          <Link to="/admin/listshop" className="d-flex align-items-center">
+        <li className={location.pathname === '/admin/shop/listshop' ? 'active' : ''}>
+          <Link to="/admin/shop/listshop" className="d-flex align-items-center">
             <FaStore style={{ marginRight: '10px' }} />
             List Shop
           </Link>
         </li>
-        <li className={location.pathname === '/admin/listcategory' ? 'active' : ''}>
-          <Link to="/admin/listcategory" className="d-flex align-items-center">
+        <li className={location.pathname === '/admin/category/listcategory' ? 'active' : ''}>
+          <Link to="/admin/category/listcategory" className="d-flex align-items-center">
             <FaStore style={{ marginRight: '10px' }} />
             List Category
           </Link>
         </li>
-        <li className={location.pathname === '/admin/listproduct' ? 'active' : ''}>
-          <Link to="/admin/listproduct" className="d-flex align-items-center">
+        <li className={location.pathname === '/admin/product/listproduct' ? 'active' : ''}>
+          <Link to="/admin/product/listproduct" className="d-flex align-items-center">
             <FaStore style={{ marginRight: '10px' }} />
             List Product
           </Link>

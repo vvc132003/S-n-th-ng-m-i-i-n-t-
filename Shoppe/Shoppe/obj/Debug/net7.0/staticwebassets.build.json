@@ -1,11 +1,54 @@
 {
   "Version": 1,
-  "Hash": "5717l1xJuSieukdw3pUrazHEzc5p/D0EqXzGPcu1doE=",
+  "Hash": "ocr1OalckSIVgJB4GjzgGUBgktWXrEGnJNr/6uL6nl0=",
   "Source": "Shoppe",
   "BasePath": "_content/Shoppe",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "Shoppe\\wwwroot",
+      "Source": "Shoppe",
+      "ContentRoot": "E:\\Shopee\\Shoppe\\Shoppe\\wwwroot\\",
+      "BasePath": "_content/Shoppe",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "E:\\Shopee\\Shoppe\\Shoppe\\wwwroot\\lib\\aspnet\\signalr\\dist\\browser\\signalr.js",
+      "SourceId": "Shoppe",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\Shopee\\Shoppe\\Shoppe\\wwwroot\\",
+      "BasePath": "_content/Shoppe",
+      "RelativePath": "lib/aspnet/signalr/dist/browser/signalr.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\aspnet\\signalr\\dist\\browser\\signalr.js"
+    },
+    {
+      "Identity": "E:\\Shopee\\Shoppe\\Shoppe\\wwwroot\\lib\\aspnet\\signalr\\dist\\browser\\signalr.min.js",
+      "SourceId": "Shoppe",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\Shopee\\Shoppe\\Shoppe\\wwwroot\\",
+      "BasePath": "_content/Shoppe",
+      "RelativePath": "lib/aspnet/signalr/dist/browser/signalr.min.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\aspnet\\signalr\\dist\\browser\\signalr.min.js"
+    }
+  ]
 }

@@ -98,11 +98,11 @@ namespace Shoppe.Controllers
                 orderDTOlist = await orderService.GetOrdersByUserIdAsync(UserId);
             }
 
-            if(orderDTOlist ==null)
+            if (orderDTOlist == null)
             {
                 return Ok();
             }
-            List <Modeldata> modeldatass = new List<Modeldata>();
+            List<Modeldata> modeldatass = new List<Modeldata>();
             foreach (var orderDTO in orderDTOlist)
             {
                 ShopDto shopDto = await shopService.GetShopDTOByIdAsync(orderDTO.ShopId);
@@ -122,5 +122,11 @@ namespace Shoppe.Controllers
             }
             return Ok(modeldatass);
         }
+
+
+
+
+
+
     }
 }

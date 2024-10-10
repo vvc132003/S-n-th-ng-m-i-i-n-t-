@@ -28,15 +28,18 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAllOrigins",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000")
+            builder.WithOrigins("http://192.168.0.125:3000")
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    .AllowCredentials();
         });
 });
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 app.UseHttpsRedirection();
+app.UseRouting();
+
 app.UseCors("AllowAllOrigins"); 
 
 
@@ -51,6 +54,8 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chathub");
+app.MapHub<ShopHub>("/shophub");
 
 
 app.Run();

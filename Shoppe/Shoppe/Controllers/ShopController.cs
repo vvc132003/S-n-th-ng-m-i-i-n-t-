@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Shoppe.Model.DTO;
 using Shoppe.Model.EF;
 using Shoppe.Service;
@@ -13,10 +14,13 @@ namespace Shoppe.Controllers
     {
         private readonly ShopService shopService;
         private readonly UserService userService;
-        public ShopController(ShopService shopService, UserService userService)
+        private readonly IHubContext<ShopHub> _hubContext; 
+
+        public ShopController(ShopService shopService, UserService userService, IHubContext<ShopHub> hubContext)
         {
             this.shopService = shopService;
             this.userService = userService;
+            _hubContext = hubContext;
         }
         [HttpGet("listShop")]
         public async Task<IActionResult> ListShop()
@@ -55,6 +59,7 @@ namespace Shoppe.Controllers
                 shop.Avatar = "";
             }
             await shopService.AddShop(shop);
+            await _hubContext.Clients.All.SendAsync("ReceiveShopAdded", shop.ShopName);
             return Ok("User added successfully.");
         }
 
