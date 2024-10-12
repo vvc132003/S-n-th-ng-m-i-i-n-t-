@@ -51,6 +51,7 @@ import Statistical from './components/Salesman/SalesmanComponents/Statistical';
 import PrivateRoute from './components/hooks/PrivateRoute';
 import Chat from './components/Home/Chat/Chat';
 import ListPhong from './components/Admin/ProductComponents/ListPhong';
+import SearchRoom from './components/Home/ProductComponents/SearchRoom';
 
 
 
@@ -59,6 +60,7 @@ const App = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/phong" element={<ListPhong />} />
+      
 
       {/* <Route path="/admin" element={<PrivateRoute element={<AdminDashboard />} requiredRole="Quản lý" />} /> */}
       {/* <Route path="/admin/dashboard" element={<PrivateRoute element={<DashboardHome />} requiredRole="Quản lý" />} /> */}
@@ -99,6 +101,8 @@ const App = () => {
 
       {/* product */}
       <Route path="/home/product" element={<ProductDetail />} requiredRole="" />
+      <Route path="/home/SearchRoom" element={<SearchRoom />} requiredRole="" />
+
 
       {/* cart */}
       <Route path="/cart/listCart" element={<PrivateRoute element={<ListCart />} requiredRole="" />} />
